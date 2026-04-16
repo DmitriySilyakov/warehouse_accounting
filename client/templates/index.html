@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Складской учет</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Складской учет</h1>
+      <p>Контроль остатков и движений • {{ today }}</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <h2>Товары</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Название</th>
+              <th>Остаток</th>
+              <th>Ячейка</th>
+              <th>Последнее движение</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>{{ item.sku }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.quantity }} {{ item.unit }}</td>
+              <td>{{ item.location }}</td>
+              <td>{{ item.last_move }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel side">
+        <h2>Операция</h2>
+        <form action="{{ url_for('move_item') }}" method="post" class="form-grid">
+          <label>Товар
+            <select name="item_id" required>
+              {% for item in items %}
+              <option value="{{ item.id }}">{{ item.name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>Тип движения
+            <select name="move_type" required>
+              <option value="in">Приход</option>
+              <option value="out">Расход</option>
+            </select>
+          </label>
+
+          <label>Количество
+            <input name="amount" type="number" min="1" required />
+          </label>
+
+          <button type="submit">Провести</button>
+        </form>
+
+        <h3>Последние операции</h3>
+        <ul class="moves">
+          {% for move in movements %}
+          <li>
+            <span>{{ move.created_at }}</span>
+            <b>{{ move.item_name }}</b>
+            <i class="{{ move.move_type }}">{{ 'Приход' if move.move_type == 'in' else 'Расход' }}</i>
+            <strong>{{ move.amount }}</strong>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
