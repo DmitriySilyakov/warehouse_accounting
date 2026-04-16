@@ -1,6 +1,6 @@
 # Warehouse Accounting (PostgreSQL + Python)
 
-Проект переведен на PostgreSQL и Python-клиент.
+Проект на PostgreSQL и Python-клиент.
 
 ## Запуск
 
